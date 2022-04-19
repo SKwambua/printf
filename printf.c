@@ -1,6 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include "main.h"
+
+/**
+ * _printf - is a clone of printf function
+ * writes the output to std out
+ *
+ * Return: number of characters printed
+ */
+
 
 int _printf(const char *format, ...)
 {
@@ -20,24 +29,19 @@ int _printf(const char *format, ...)
 		if (*c == '%')
 		{
 			c++;
+
 			if (*c == '%')
 			{
 				len += putchar('%');
+
 				continue;
 			}
-
 		}
 		else
-			len += putchar(*c);
+			len += _putchar(*c);
 	}
-	putchar(-1);
+	_putchar(-1);
 	va_end(list);
 	return (len);
-
-}
-int main()
-{
-	_printf("mustwork");
-	return (0);
 
 }
