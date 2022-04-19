@@ -32,7 +32,7 @@ int _printf(const char *format, ...)
 
 			if (*c == '%')
 			{
-				len += putchar('%');
+				len += _putchar('%');
 
 				continue;
 			}
