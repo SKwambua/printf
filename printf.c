@@ -1,8 +1,31 @@
-#include <stdio.h>
 #include <stddef.h>
-#include <stdlib.h>
 #include <stdarg.h>
 #include "main.h"
+
+/**
+ * get_op - select function for conversion character
+ * @b: char to check
+ * Return: pointer to function
+ */
+int (*get_op(const char b))(va_list)
+{
+	int i = 0;
+
+	flags_p fp[] = {
+		{"c", print_char},
+		{"s", print_str},
+		{"%", print_percent}
+	};
+	while (i < 3)
+	{
+		if (b == fp[i].c[0])
+		{
+		return (fp[i].f);
+		}
+		i++;
+	}
+	return (NULL);
+}
 
 /**
  * _printf - is a clone of printf function
@@ -16,43 +39,39 @@
 int _printf(const char *format, ...)
 {
 	va_list list;
-	int i = 0;
-	int sum = 0;
-	int (*point)(va_list);
+	int len = 0, i = 0;
+	int (*func)();
 
+	if (!format || (format[0] == '%' && format[1] == '\0'))
+		return (-1);
 	va_start(list, format);
 
-	if (format[0] == '%' && format[1] == '\0')
-	{
-		return (-1);
-	}
-	if (format[0] == '%' && format[1] == ' ')
-	{
-		return (-1);
-	}
-	while (format != NULL ])
+	while (format[i])
 	{
 		if (format[i] == '%')
 		{
-			if (format[1 + i] == '%')
+			if (format[i + 1] != '\0')
+				func = get_op(format[i + 1]);
+			if (func == NULL)
 			{
-				sum += _putchar(format[i]);
-				i += 2;
+				_putchar(format[i]);
+				len++;
+				i++;
 			}
 			else
 			{
-				point = _putchar(format[i + 1]);
-				if (point)
-					sum += point(list);
-				else
-					sum = _putchar(format[i]) + _putchar(format[1 + i]);
+				len += func(list);
 				i += 2;
+				continue;
 			}
 		}
 		else
-			sum += _putchar(format[i]);
-		i++;
+		{
+			_putchar(format[i]);
+			len++;
+			i++;
+		}
 	}
 	va_end(list);
-	return (sum);
+	return (len);
 }
