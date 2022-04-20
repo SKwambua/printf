@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stddef.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include "main.h"
@@ -15,33 +16,43 @@
 int _printf(const char *format, ...)
 {
 	va_list list;
-	const char *c;
+	int i = 0;
+	int sum = 0;
+	int (*point)(va_list);
 
 	va_start(list, format);
-	register int len = 0;
 
-	if (!format || (format[0] == '%' && !format[1]))
-		return (-1);
-	if (format[0] == '%' && format[1] == ' ' && !format[2])
-		return (-1);
-
-	for (c = format; *c; c++)
+	if (format[0] == '%' && format[1] == '\0')
 	{
-		if (*c == '%')
+		return (-1);
+	}
+	if (format[0] == '%' && format[1] == ' ')
+	{
+		return (-1);
+	}
+	while (format != NULL ])
+	{
+		if (format[i] == '%')
 		{
-			c++;
-
-			if (*c == '%')
+			if (format[1 + i] == '%')
 			{
-				len += _putchar('%');
-
-				continue;
+				sum += _putchar(format[i]);
+				i += 2;
+			}
+			else
+			{
+				point = _putchar(format[i + 1]);
+				if (point)
+					sum += point(list);
+				else
+					sum = _putchar(format[i]) + _putchar(format[1 + i]);
+				i += 2;
 			}
 		}
 		else
-			len += _putchar(*c);
+			sum += _putchar(format[i]);
+		i++;
 	}
-	_putchar(-1);
 	va_end(list);
-	return (len);
+	return (sum);
 }
