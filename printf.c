@@ -1,58 +1,47 @@
-#include <stdio.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <stdarg.h>
 #include "main.h"
 
 /**
- * _printf - is a clone of printf function
- * writes the output to std out
+ * _printf - produces output according to a format
  * @format: format string containing the characters and the specifiers
- *
- * Return: number of characters printed
+ * Description: this function will call the get_print() function that will
+ * determine which printing function to call depending on the conversion
+ * specifiers contained into fmt
+ * Return: length of the formatted output string
  */
-
-
 int _printf(const char *format, ...)
 {
-	va_list list;
-	int i = 0;
-	int sum = 0;
-	int (*point)(va_list);
+	int (*pfunc)(va_list, flags_t *);
+	const char *p;
+	va_list arguments;
+	flags_t flags = {0, 0, 0};
 
-	va_start(list, format);
+	register int count = 0;
 
-	if (format[0] == '%' && format[1] == '\0')
-	{
+	va_start(arguments, format);
+	if (!format || (format[0] == '%' && !format[1]))
 		return (-1);
-	}
-	if (format[0] == '%' && format[1] == ' ')
-	{
+	if (format[0] == '%' && format[1] == ' ' && !format[2])
 		return (-1);
-	}
-	while (format != NULL ])
+	for (p = format; *p; p++)
 	{
-		if (format[i] == '%')
+		if (*p == '%')
 		{
-			if (format[1 + i] == '%')
+			p++;
+			if (*p == '%')
 			{
-				sum += _putchar(format[i]);
-				i += 2;
+				count += _putchar('%');
+				continue;
 			}
-			else
-			{
-				point = _putchar(format[i + 1]);
-				if (point)
-					sum += point(list);
-				else
-					sum = _putchar(format[i]) + _putchar(format[1 + i]);
-				i += 2;
-			}
-		}
-		else
-			sum += _putchar(format[i]);
-		i++;
+			while (get_flag(*p, &flags))
+				p++;
+			pfunc = get_print(*p);
+			count += (pfunc)
+				? pfunc(arguments, &flags)
+				: _printf("%%%c", *p);
+		} else
+			count += _putchar(*p);
 	}
-	va_end(list);
-	return (sum);
+	_putchar(-1);
+	va_end(arguments);
+	return (count);
 }
