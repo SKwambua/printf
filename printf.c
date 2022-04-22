@@ -39,7 +39,7 @@ int (*get_op(const char b))(va_list)
 int _printf(const char *format, ...)
 {
 	va_list list;
-	int lens= 0, i = 0;
+	int sum= 0, i = 0;
 	int (*func)();
 
 	if (!format || (format[0] == '%' && format[1] == '\0'))
@@ -57,12 +57,12 @@ int _printf(const char *format, ...)
 			if (func == NULL)
 			{
 				_putchar(format[i]);
-				lens++;
+				sum++;
 				i++;
 			}
 			else
 			{
-				lens += func(list);
+				sum += func(list);
 				i += 2;
 				continue;
 			}
@@ -70,10 +70,10 @@ int _printf(const char *format, ...)
 		else
 		{
 			_putchar(format[i]);
-			lens++;
+			sum++;
 			i++;
 		}
 	}
 	va_end(list);
-	return (lens);
+	return (sum);
 }
